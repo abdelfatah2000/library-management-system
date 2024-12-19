@@ -1,6 +1,5 @@
 const { Pool } = require("pg");
 const logger = require("../utils/logger");
-const { query, text } = require("express");
 require("dotenv").config();
 
 const pool = new Pool({
@@ -9,6 +8,10 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   port: process.env.DB_PORT,
+  // ssl:
+  //   process.env.NODE_ENV === "production"
+  //     ? { rejectUnauthorized: false }
+  //     : false,
 });
 
 pool.on("error", (err) => {

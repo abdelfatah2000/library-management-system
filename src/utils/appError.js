@@ -1,10 +1,8 @@
-const { StatusCodes, ReasonPhrases } = require("http-status-codes");
-
 class AppError extends Error {
-  constructor(message, statusCode , phrase) {
+  constructor(message, statusCode , status) {
     super(message);
     this.statusCode  = statusCode ;
-    this.status = phrase;
+    this.status = status;
 
     this.isOperational = true;
 

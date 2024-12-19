@@ -1,4 +1,7 @@
-// src/utils/catchAsync.js
-module.exports = (fn) => (req, res, next) => {
-  fn(req, res, next).catch(next); // Pass the error to the next middleware
+const catchAsync = (fn) => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);  // If there's an error, pass it to the next middleware
+  };
 };
+
+module.exports = catchAsync;
