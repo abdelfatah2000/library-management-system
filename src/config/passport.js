@@ -1,7 +1,7 @@
 const passport = require("passport");
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
-const authService = require("../services/auth.services");
+const userService = require("../services/user.service");
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -11,7 +11,8 @@ const jwtOptions = {
 passport.use(
   new JWTStrategy(jwtOptions, async (payload, done) => {
     try {
-      const user = await authService.getUserByID(payload.id);
+      const user = await userService.getStaffByID(payload.id);
+      // console.log(payload);
       if (user) {
         return done(null, user);
       } else {

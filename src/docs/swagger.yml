@@ -12,11 +12,12 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    User:
+    Member:
       type: object
       required:
         - name
         - email
+        - phone
       properties:
         id:
           type: integer
@@ -33,9 +34,38 @@ components:
         updated_at:
           type: string
           format: date-time
-        last_login:
+    Librarian:
+      type: object
+      required:
+        - name
+        - email
+        - phone
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        role_id:
+          type: integer
+        created_at:
           type: string
           format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    # Book:
+    #   type: object
+    #   required:
+    #     - title
+    #     - author_id
+    #     - published_at
+    #     - isbn
+
     AppError:
       type: object
       properties:
@@ -104,56 +134,10 @@ security:
   - BearerAuth: []
 
 paths:
-  /auth/register:
-    post:
-      tags:
-        - Authentication
-      summary: User sign up
-      description: Add new user to the database
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - name
-                - email
-                - phone
-                - password
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                  format: email
-                phone:
-                  type: string
-                password:
-                  type: string
-                  format: password
-      responses:
-        "201":
-          description: User created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "success"
-                  message:
-                    type: string
-                    example: "User created successfully"
-                  user:
-                    $ref: "#/components/schemas/User"
-        "400":
-          $ref: "#/components/responses/BadRequest"
   /auth/login:
     post:
       tags:
-        - Authentication
+        - User
       summary: Login user
       security: []
       requestBody:
@@ -192,3 +176,137 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+  /auth/add-librarian:
+    post:
+      tags:
+        - User
+      summary: Add new librarian
+      description: Add new librarian to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - phone
+                - password
+                - role_id
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                role_id:
+                  type: integer
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "User created successfully"
+                  user:
+                    $ref: "#/components/schemas/Librarian"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /auth/add-member:
+    post:
+      tags:
+        - User
+      summary: Add new member
+      description: Add new member to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - name
+                - phone
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+      responses:
+        "200":
+          description: Added memeber successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/Member"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /books/get_books:
+    get:
+      tags: 
+        - Books
+      summary: Get all Books
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 100
+            default: 10
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum:
+              - id
+              - created_at
+              - published_at
+            default: id
+        - in: query
+          name: sortOrder
+          schema:
+            type: string
+            enum: 
+              - ASC
+              - DESC
+            default: ASC
+      # responses:
+      #   '200':
+      #     description: List of Books
+      #     content:
+      #       application/json:
+      #         schema:
+      #           type: ob
