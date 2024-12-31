@@ -28,6 +28,8 @@ components:
           format: email
         phone:
           type: string
+        is_verified:
+          type: boolean
         created_at:
           type: string
           format: date-time
@@ -58,14 +60,54 @@ components:
         updated_at:
           type: string
           format: date-time
-    # Book:
-    #   type: object
-    #   required:
-    #     - title
-    #     - author_id
-    #     - published_at
-    #     - isbn
-
+    Book:
+      type: object
+      required:
+        - title
+        - author_id
+        - published_at
+        - isbn
+        - status
+        - category_id
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author_id:
+          type: integer
+        isbn:
+          type: integer
+        status:
+          type: string
+          enum:
+            - avaliable
+            - loaned
+            - unavaliable
+        published_at:
+          type: string
+          format: data-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Author:
+      type: object
+      required:
+        - name
+        - bio
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        bio:
+          type: string
+        created_at:
+          type: string
+          format: data-time
     AppError:
       type: object
       properties:
@@ -137,7 +179,7 @@ paths:
   /auth/login:
     post:
       tags:
-        - User
+        - Auth
       summary: Login user
       security: []
       requestBody:
@@ -179,7 +221,7 @@ paths:
   /auth/add-librarian:
     post:
       tags:
-        - User
+        - Staff
       summary: Add new librarian
       description: Add new librarian to the database
       requestBody:
@@ -230,7 +272,7 @@ paths:
   /auth/add-member:
     post:
       tags:
-        - User
+        - Members
       summary: Add new member
       description: Add new member to the database
       requestBody:
@@ -252,7 +294,7 @@ paths:
                 phone:
                   type: string
       responses:
-        "200":
+        "201":
           description: Added memeber successfully
           content:
             application/json:
@@ -267,12 +309,436 @@ paths:
                     $ref: "#/components/schemas/Member"
         "400":
           $ref: "#/components/responses/BadRequest"
-  /books/get_books:
+  /auth/get-members:
     get:
-      tags: 
+      tags:
+        - Members
+      summary: Get all library members
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 100
+            default: 10
+      responses:
+        "200":
+          description: Get all members successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        phone:
+                          type: integer
+                        number_of_loans:
+                          type: integer
+                  pagination:
+                    type: object
+                    properties:
+                      totalPages:
+                        type: integer
+                      totalRows:
+                        type: integer
+                      page:
+                        type: integer
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /auth/get-staff:
+    get:
+      tags:
+        - Staff
+      summary: Get all library staff
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 100
+            default: 10
+      responses:
+        "200":
+          description: Get all staff successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Librarian"
+                  pagination:
+                    type: object
+                    properties:
+                      totalPages:
+                        type: integer
+                      totalRows:
+                        type: integer
+                      page:
+                        type: integer
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /auth/delete-member/{id}:
+    delete:
+      tags:
+        - Members
+      summary: Delete a member
+      parameters:
+        - name: id
+          in: path
+          description: ID of the memeber
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: successful deleting
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  status: success
+                  message: Member is deleted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /auth/delete-staff/{id}:
+    delete:
+      tags:
+        - Staff
+      summary: Delete a Staff
+      parameters:
+        - name: id
+          in: path
+          description: ID of the staff
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: successful deleting
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  status: success
+                  message: Staff is deleted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /auth/get-staff/{id}:
+    get:
+      tags:
+        - Staff
+      summary: Get staff details
+      parameters:
+        - name: id
+          in: path
+          description: ID of the staff
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Get staff details successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Librarian"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /auth/get-member/{id}:
+    get:
+      tags:
+        - Members
+      summary: Get member details
+      parameters:
+        - name: id
+          in: path
+          description: ID of the member
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Get member details successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Member"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /auth/update-member/{id}:
+    put:
+      tags:
+        - Members
+      parameters:
+        - name: id
+          in: path
+          description: ID of the member
+          required: true
+          schema:
+            type: integer
+      summary: Update existing member
+      requestBody:
+        description: Update an existent member
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Member"
+      responses:
+        "200":
+          description: Member details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /auth/update-staff/{id}:
+    put:
+      tags:
+        - Staff
+      parameters:
+        - name: id
+          in: path
+          description: ID of the staff
+          required: true
+          schema:
+            type: integer
+      summary: Update existing staff
+      requestBody:
+        description: Update an existent staff
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Librarian"
+      responses:
+        "200":
+          description: Member details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /books/add-book:
+    post:
+      tags:
+        - Books
+      summary: Add new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - author_id
+                - published_at
+                - isbn
+                - category_id
+              properties:
+                title:
+                  type: string
+                author_id:
+                  type: integer
+                published_at:
+                  type: string
+                  format: date
+                isbn:
+                  type: string
+                category_id:
+                  type: integer
+      responses:
+        "201":
+          description: Book added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  book:
+                    $ref: "#/components/schemas/Book"
+  /books/get-books:
+    get:
+      tags:
         - Books
       summary: Get all Books
       parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 100
+            default: 10
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum:
+              - id
+              - title
+              - created_at
+              - published_at
+            default: id
+        - in: query
+          name: sortOrder
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: ASC
+      responses:
+        "200":
+          description: List of Books
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        author:
+                          type: string
+                        isbn:
+                          type: integer
+                        status:
+                          type: string
+                          enum:
+                            - avaliable
+                            - loaned
+                            - unavaliable
+                        category:
+                          type: string
+                        published_at:
+                          type: string
+                          format: data-time
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  pagination:
+                    type: object
+                    properties:
+                      totalPages:
+                        type: integer
+                      totalRows:
+                        type: integer
+                      page:
+                        type: integer
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /books/search-books:
+    get:
+      tags:
+        - Books
+      summary: Searching books
+      security: []
+      parameters:
+        - in: query
+          name: s
+          schema:
+            type: string
         - in: query
           name: page
           schema:
@@ -299,14 +765,414 @@ paths:
           name: sortOrder
           schema:
             type: string
-            enum: 
+            enum:
               - ASC
               - DESC
             default: ASC
-      # responses:
-      #   '200':
-      #     description: List of Books
-      #     content:
-      #       application/json:
-      #         schema:
-      #           type: ob
+      responses:
+        "200":
+          description: List of Books
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        author:
+                          type: string
+                        isbn:
+                          type: integer
+                        status:
+                          type: string
+                          enum:
+                            - avaliable
+                            - loaned
+                            - unavaliable
+                        category:
+                          type: string
+                        published_at:
+                          type: string
+                          format: data-time
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  pagination:
+                    type: object
+                    properties:
+                      totalPages:
+                        type: integer
+                      totalRows:
+                        type: integer
+                      page:
+                        type: integer
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /books/delete-book/{id}:
+    delete:
+      tags:
+        - Books
+      summary: Delete a book
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: successful deleting
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  status: success
+                  message: Book is deleted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /books/get-book/{id}:
+    get:
+      tags:
+        - Books
+      summary: Get a book
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Book details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /books/update-book/{id}:
+    put:
+      tags:
+        - Books
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book
+          required: true
+          schema:
+            type: integer
+      summary: Update existing book
+      requestBody:
+        description: Update an existent book
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        "200":
+          description: Book details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /category/add-category:
+    post:
+      tags:
+        - Category
+      summary: Add new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        "201":
+          description: Category added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /category/get-categories:
+    get:
+      tags:
+        - Category
+      summary: Get all categories
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 100
+            default: 10
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum:
+              - id
+              - name
+              - created_at
+            default: id
+        - in: query
+          name: sortOrder
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: ASC
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /category/get-category/{id}:
+    get:
+      tags:
+        - Category
+      summary: Get category
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+
+      responses:
+        "200":
+          description: category details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /category/get-category-books/{id}:
+    get:
+      tags:
+        - Category
+      summary: Get category books
+      security: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 5
+            maximum: 100
+            default: 10
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum:
+              - id
+              - title
+              - created_at
+              - published_at
+            default: id
+        - in: query
+          name: sortOrder
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: ASC
+      responses:
+        "200":
+          description: book details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Book"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /category/delete-category:
+    delete:
+      tags:
+        - Category
+      summary: Delete a category
+      parameters:
+        - name: id
+          in: path
+          description: ID of the category
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: successful deleting
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                example:
+                  status: success
+                  message: Category is deleted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /category/update-category:
+    put:
+      tags:
+        - Category
+      summary: Update existing category
+      parameters:
+        - name: id
+          in: path
+          description: ID of the category
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        "200":
+          description: Category details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"

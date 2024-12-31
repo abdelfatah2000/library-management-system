@@ -47,9 +47,107 @@ const verifyEmail = catchAsync(async (req, res) => {
   });
 });
 
+const getAllMembers = catchAsync(async (req, res) => {
+  const page = parseInt(req.query.page || 1);
+  const limit = parseInt(req.query.limit || 10);
+
+  const members = await userService.getAllMembers(page, limit);
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "All members",
+    ...members,
+  });
+});
+
+const getAllStaff = catchAsync(async (req, res) => {
+  const page = parseInt(req.query.page || 1);
+  const limit = parseInt(req.query.limit || 10);
+
+  const staff = await userService.getAllStaff(page, limit);
+  res.status(StatusCodes.OK).json({
+    status: "sucess",
+    message: "Get all library staff",
+    ...staff,
+  });
+});
+
+const getStaffByID = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const data = await userService.getStaffByID(id);
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Get staff data",
+    data,
+  });
+});
+
+const getMemberByID = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const data = await userService.getMemberByID(id);
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Get member data",
+    data,
+  });
+});
+
+const deleteMember = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  await userService.deleteMember(id);
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Member is deleted successfully",
+  });
+});
+
+const deleteStaff = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  await userService.deleteStaff(id);
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Staff is deleted successfully",
+  });
+});
+
+const updateMember = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const { name, email, phone, is_verified } = req.body;
+  const data = await userService.updateMember(
+    id,
+    name,
+    email,
+    phone,
+    is_verified
+  );
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Member updated successfully",
+    data,
+  });
+});
+
+const updateStaff = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const { name, email, phone, role_id } = req.body;
+  const data = await userService.updateStaff(id, name, email, phone, role_id);
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    message: "Staff updated successfully",
+    data,
+  });
+});
+
 module.exports = {
+  getMemberByID,
+  getAllMembers,
   addLibrarian,
+  getStaffByID,
+  deleteMember,
+  updateMember,
+  deleteStaff,
+  updateStaff,
   verifyEmail,
+  getAllStaff,
   addMember,
   login,
 };

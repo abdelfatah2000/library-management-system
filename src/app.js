@@ -17,6 +17,7 @@ const app = express();
 
 const userRoutes = require("./routes/user.routes");
 const bookRoutes = require("./routes/books.routes");
+const categoryRoutes = require("./routes/categories.routes");
 // Load Swagger documentation from the YAML file
 const swaggerDocument = YAML.load(path.join(__dirname, "docs/swagger.yml"));
 
@@ -32,6 +33,7 @@ app.use(passport.initialize());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/auth", userRoutes);
 app.use("/api/books", bookRoutes);
+app.use("/api/category", categoryRoutes);
 
 // Corn Jobs
 cleanupExpiredTokens();

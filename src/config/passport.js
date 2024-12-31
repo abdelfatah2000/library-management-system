@@ -13,6 +13,7 @@ passport.use(
     try {
       const user = await userService.getStaffByID(payload.id);
       // console.log(payload);
+      // console.log(user);
       if (user) {
         return done(null, user);
       } else {

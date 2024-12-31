@@ -1,5 +1,5 @@
 CREATE TYPE book_status AS ENUM ('available', 'loaned', 'unavailable');
-CREATE TYPE reservation_status AS ENUM ('canceled', 'pending', 'ready', 'accepted');
+CREATE TYPE reservation_status AS ENUM ('cancelled', 'pending', 'ready', 'accepted');
 
 
 CREATE TABLE IF NOT EXISTS roles (
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS books (
   title VARCHAR(255) NOT NULL,
   author_id INT NOT NULL REFERENCES authors(id) ON DELETE CASCADE,
   published_at DATE NOT NULL,
-  isbn VARCHAR(13) UNIQUE NOT NULL,
+  isbn VARCHAR(50) UNIQUE NOT NULL,
   status book_status DEFAULT 'available',
   category_id INT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -306,3 +306,137 @@ INSERT INTO books (title, author_id, published_at, isbn, status, category_id) VA
   ('City of Love and Ashes', (SELECT id FROM authors WHERE name = 'Yusuf Idris'), '1956-01-01', '9789774167461', 'loaned', 20),
   ('The Sin', (SELECT id FROM authors WHERE name = 'Yusuf Idris'), '1959-01-01', '9789774166724', 'available', 20);
 
+
+
+INSERT INTO members (name, email, phone, is_verified) VALUES
+('John Smith', 'john.smith@email.com', '12345678901', true),
+('Sarah Johnson', 'sarah.j@email.com', '23456789012', true),
+('Michael Brown', 'michael.b@email.com', '34567890123', true),
+('Emma Wilson', 'emma.w@email.com', '45678901234', false),
+('James Davis', 'james.d@email.com', '56789012345', true),
+('Lisa Anderson', 'lisa.a@email.com', '67890123456', true),
+('David Miller', 'david.m@email.com', '78901234567', false),
+('Jennifer Lee', 'jennifer.l@email.com', '89012345678', true),
+('Robert Taylor', 'robert.t@email.com', '90123456789', true),
+('Maria Garcia', 'maria.g@email.com', '01234567890', true),
+('Thomas Wright', 'thomas.w@email.com', '11223344556', true),
+('Patricia Moore', 'patricia.m@email.com', '22334455667', false),
+('Kevin Martinez', 'kevin.m@email.com', '33445566778', true),
+('Nancy Rodriguez', 'nancy.r@email.com', '44556677889', true),
+('Christopher Lee', 'chris.l@email.com', '55667788990', true),
+('Amanda White', 'amanda.w@email.com', '66778899001', false),
+('Daniel Clark', 'daniel.c@email.com', '77889900112', true),
+('Michelle Scott', 'michelle.s@email.com', '88990011223', true),
+('Ryan Adams', 'ryan.a@email.com', '99001122334', true),
+('Laura Hall', 'laura.h@email.com', '00112233445', false),
+('Steven King', 'steven.k@email.com', '11224455667', true),
+('Karen Young', 'karen.y@email.com', '22334455668', true),
+('Edward Baker', 'edward.b@email.com', '33445566779', true),
+('Sandra Nelson', 'sandra.n@email.com', '44556677880', false),
+('George Turner', 'george.t@email.com', '55667788991', true);
+
+
+INSERT INTO staff (name, email, phone, password, role_id) VALUES
+('Alice Cooper', 'alice.c@library.com', '11111111111', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 1),  -- Admin
+('Bob Wilson', 'bob.w@library.com', '22222222222', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2),   -- Librarian
+('Carol White', 'carol.w@library.com', '33333333333', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 1),  -- Admin
+('David Brown', 'david.b@library.com', '44444444444', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2),  -- Librarian
+('Elena Rodriguez', 'elena.r@library.com', '55555555555', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2), -- Librarian
+('Frank Johnson', 'frank.j@library.com', '66666666666', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2),  -- Librarian
+('Grace Liu', 'grace.l@library.com', '77777777777', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2),    -- Librarian
+('Henry Garcia', 'henry.g@library.com', '88888888888', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2),  -- Librarian
+('Isabella Chen', 'isabella.c@library.com', '99999999999', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 1), -- Admin
+('Jack Thompson', 'jack.t@library.com', '10101010101', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2),   -- Librarian
+('Katherine Lee', 'katherine.l@library.com', '12121212121', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2), -- Librarian
+('Lucas Martin', 'lucas.m@library.com', '13131313131', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2),   -- Librarian
+('Maria Sanchez', 'maria.s@library.com', '14141414141', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 1),  -- Admin
+('Noah Williams', 'noah.w@library.com', '15151515151', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2),   -- Librarian
+('Olivia Taylor', 'olivia.t@library.com', '16161616161', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/vC5k/3y', 2);  -- Librarian
+
+-- Insert loans
+INSERT INTO loans (member_id, staff_id, book_id, due_date, return_date) VALUES
+(1, 1, 1, CURRENT_TIMESTAMP + INTERVAL '14 days', NULL),
+(2, 2, 2, CURRENT_TIMESTAMP + INTERVAL '14 days', CURRENT_TIMESTAMP + INTERVAL '10 days'),
+(3, 1, 3, CURRENT_TIMESTAMP + INTERVAL '14 days', NULL),
+(4, 3, 4, CURRENT_TIMESTAMP + INTERVAL '14 days', CURRENT_TIMESTAMP + INTERVAL '13 days'),
+(5, 2, 5, CURRENT_TIMESTAMP + INTERVAL '14 days', NULL),
+(6, 4, 6, CURRENT_TIMESTAMP + INTERVAL '14 days', CURRENT_TIMESTAMP + INTERVAL '7 days'),
+(7, 5, 7, CURRENT_TIMESTAMP + INTERVAL '14 days', NULL),
+(8, 6, 8, CURRENT_TIMESTAMP + INTERVAL '14 days', CURRENT_TIMESTAMP + INTERVAL '15 days'),
+(9, 7, 9, CURRENT_TIMESTAMP + INTERVAL '14 days', NULL),
+(10, 8, 10, CURRENT_TIMESTAMP + INTERVAL '14 days', CURRENT_TIMESTAMP + INTERVAL '12 days'),
+(11, 1, 11, CURRENT_TIMESTAMP + INTERVAL '14 days', NULL),
+(12, 2, 12, CURRENT_TIMESTAMP + INTERVAL '14 days', CURRENT_TIMESTAMP + INTERVAL '8 days'),
+(13, 3, 13, CURRENT_TIMESTAMP + INTERVAL '14 days', NULL),
+(14, 4, 14, CURRENT_TIMESTAMP + INTERVAL '14 days', CURRENT_TIMESTAMP + INTERVAL '14 days'),
+(15, 5, 15, CURRENT_TIMESTAMP + INTERVAL '14 days', NULL),
+(16, 6, 16, CURRENT_TIMESTAMP - INTERVAL '20 days', NULL),
+(17, 7, 17, CURRENT_TIMESTAMP - INTERVAL '25 days', NULL),
+(18, 8, 18, CURRENT_TIMESTAMP - INTERVAL '30 days', NULL),
+(19, 1, 19, CURRENT_TIMESTAMP - INTERVAL '15 days', CURRENT_TIMESTAMP + INTERVAL '2 days'),
+(20, 2, 20, CURRENT_TIMESTAMP - INTERVAL '10 days', CURRENT_TIMESTAMP - INTERVAL '5 days');
+
+
+INSERT INTO reservations (book_id, member_id, status) VALUES
+-- Some pending reservations (waiting in queue)
+(1, 6, 'pending'),
+(2, 7, 'pending'),
+(3, 8, 'pending'),
+(4, 9, 'pending'),
+(5, 10, 'pending'),
+
+-- Ready reservations (book is available for pickup)
+(6, 11, 'ready'),
+(7, 12, 'ready'),
+(8, 13, 'ready'),
+(9, 14, 'ready'),
+(10, 15, 'ready'),
+
+-- Accepted reservations (member has picked up the book)
+(11, 16, 'accepted'),
+(12, 17, 'accepted'),
+(13, 18, 'accepted'),
+(14, 19, 'accepted'),
+(15, 20, 'accepted'),
+
+-- Cancelled reservations (either by member or system)
+(16, 21, 'cancelled'),
+(17, 22, 'cancelled'),
+(18, 23, 'cancelled'),
+(19, 24, 'cancelled'),
+(20, 25, 'cancelled'),
+
+-- Additional mixed status reservations
+(1, 7, 'ready'),
+(2, 8, 'accepted'),
+(3, 9, 'pending'),
+(4, 10, 'cancelled'),
+(5, 11, 'pending'),
+(6, 12, 'ready'),
+(7, 13, 'accepted'),
+(8, 14, 'cancelled'),
+(9, 15, 'pending'),
+(10, 16, 'ready');
+
+-- Insert fines
+INSERT INTO fines (loan_id, member_id, amount, paid_date) VALUES
+(21, 1, 5.00, NULL),
+(22, 2, 10.00, CURRENT_TIMESTAMP),
+(23, 3, 15.00, NULL),
+(24, 4, 7.50, CURRENT_TIMESTAMP),
+(25, 5, 12.50, NULL),
+(28, 8, 20.00, NULL),
+(26, 16, 25.00, NULL),
+(27, 17, 30.00, NULL),
+(28, 18, 35.00, NULL),
+(29, 19, 8.00, CURRENT_TIMESTAMP),
+(30, 20, 15.50, CURRENT_TIMESTAMP),
+(36, 6, 4.50, CURRENT_TIMESTAMP),
+(37, 7, 9.00, NULL),
+(39, 9, 11.00, NULL),
+(40, 10, 6.50, CURRENT_TIMESTAMP),
+(31, 11, 13.00, NULL),
+(32, 12, 16.50, CURRENT_TIMESTAMP),
+(33, 13, 22.00, NULL),
+(34, 14, 18.50, CURRENT_TIMESTAMP),
+(35, 15, 27.50, NULL);

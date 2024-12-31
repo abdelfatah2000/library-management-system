@@ -5,10 +5,10 @@ const { StatusCodes } = require("http-status-codes");
 const getPagination = async (
   baseQuery,
   values = [],
-  limit,
-  page,
-  sortBy,
-  sortOrder
+  page = 1,
+  limit = 10,
+  sortBy = 'id',
+  sortOrder = 'ASC'
 ) => {
   const santiziedSortBy = sortBy.replace(/[^a-zA-Z0-9_]/g, "");
   const offest = (page - 1) * limit;
@@ -20,12 +20,14 @@ const getPagination = async (
       LIMIT $${values.length + 1}
       OFFSET $${values.length + 2};
   `;
+  console.log(query);
+  
     values.push(limit);
     values.push(offest);
     const { rows } = await db.query(query, values);
     const totalPages = Math.ceil(rowCount / limit);
     return {
-      data: [rows[0]],
+      data: rows,
       pagination: {
         totalPages,
         totalRows: rowCount,

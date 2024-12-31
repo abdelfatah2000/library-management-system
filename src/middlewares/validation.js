@@ -1,23 +1,31 @@
 const { StatusCodes } = require("http-status-codes");
-const validator = (schema) => (req, res, next) => {
-  const { error } = schema.validate(req.body, {
-    abortEarly: false,
-    allowUnknown: false,
-  });
+const validator = (schema) => async (req, res, next) => {
+  try {
+    for (const [key, validationSchema] of Object.entries(schema)) {
+      if (req[key]) {
+        await validationSchema.validateAsync(req[key], {
+          abortEarly: false,
+          allowUnknown: false,
+        });
+      }
+    }
+    next();
+  } catch (error) {
+    if (error.details) {
+      const details = error.details.map((err) => ({
+        type: err.path[0],
+        field: err.path.join("."),
+        message: err.message,
+      }));
 
-  if (error) {
-    const details = error.details.map((err) => ({
-      field: err.path[0],
-      message: err.message,
-    }));
-
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      status: "fail",
-      message: "Validation Error",
-      details,
-    });
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        status: "fail",
+        message: "Validation Error",
+        details,
+      });
+    }
+    next(error);
   }
-  next();
 };
 
 module.exports = validator;
